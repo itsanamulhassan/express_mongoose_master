@@ -3,8 +3,6 @@ const path = require("path");
 const fs = require("fs");
 const { json } = require("stream/consumers");
 
-const filepath = path.join(__dirname, "./db/todos.json");
-
 const server = http.createServer((req, res) => {
   const { method } = req;
   const { pathname, searchParams } = new URL(
