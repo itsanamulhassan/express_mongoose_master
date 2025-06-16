@@ -1,0 +1,57 @@
+let db;
+
+// 🔹 $eq — Equal To
+// Matches documents where the value of the field is equal to the specified value.
+db.users.find({ age: { $eq: 25 } });
+// Same as:
+db.users.find({ age: 25 });
+
+// 🔹 $ne — Not Equal To
+// Matches documents where the value of the field is not equal to the specified value.
+db.users.find({ age: { $ne: 25 } });
+
+// 🔹 $gt — Greater Than
+// Matches values greater than the specified value.
+db.users.find({ age: { $gt: 25 } });
+
+// 🔹 $gte — Greater Than or Equal To
+// Matches values greater than or equal to the specified value.
+db.users.find({ age: { $gte: 18 } });
+
+// 🔹 $lt — Less Than
+// Matches values less than the specified value.
+db.users.find({ age: { $lt: 30 } });
+
+// 🔹 $lte — Less Than or Equal To
+//  Matches values less than or equal to the specified value.
+db.users.find({ age: { $lte: 30 } });
+// Combine with $gte to get a range:
+db.users.find({ age: { $gte: 18, $lte: 30 } });
+
+// 🔹 $in — Matches Any in Array
+//  Matches documents where the field’s value is in the specified array.
+db.users.find({ age: { $in: [18, 20, 25, 30] } });
+
+// 🔹 $nin — Not In Array
+// Matches documents where the field’s value is not in the specified array.
+db.users.find({ age: { $nin: [18, 20, 25, 30] } });
+
+// 🧠 COMBINED USE CASE
+// ✅ Get Female users aged between 18 and 30:
+db.users.find({
+  gender: "Female",
+  age: { $gte: 18, $lte: 30 },
+});
+// ✅ Get users with age not 18 and not 25:
+db.users.find({
+  age: { $nin: [18, 25] },
+});
+// ✅ Get users whose interests include “Reading” or “Cooking”:
+db.users.find({
+  interests: { $in: ["Reading", "Cooking"] },
+});
+// ✅ Get users aged over 18 but not interested in “Gaming”:
+db.users.find({
+  age: { $gt: 18 },
+  interests: { $ne: "Gaming" },
+});
