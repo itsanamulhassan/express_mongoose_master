@@ -21,3 +21,14 @@ db.users.find({
     { interests: { $in: ["Cooking", "Reading"] } },
   ],
 });
+
+// ✅  Explicit $and, $or, $nor
+ db.test.find({
+     $and: [
+         { age: { $gte: 18 } }, { age: { $lte: 30 } }, { gender: "Female" }],
+     $or: [
+         { interests: "Reading" }, { interests: "Cooking" }],
+     $nor: [{ interests: "Gaming" }, { interests: "Travelling" }]
+ }).project({
+     age: 1, interests: 1, gender: 1
+ }).sort({ age: 1 })
