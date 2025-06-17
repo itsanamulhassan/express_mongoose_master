@@ -1,0 +1,70 @@
+// ✅ $set – Add or Update a Field
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  {
+    $set: {
+      birthday: "1999-09-09",
+      company: "OpenAI",
+      "address.city": "Zagreb",
+    },
+  }
+);
+// 📝 Note:
+// - Adds a field if it doesn’t exist, or updates if it does.
+// - Can set nested fields using dot notation.
+
+// 🧹 $unset – Remove a Field
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  { $unset: { birthday: "" } }
+);
+// 📝 Note:
+// - Deletes the specified field from the document.
+
+// ➖ $pop – Remove First or Last Item from Array
+// Remove last item
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  { $pop: { friends: 1 } }
+);
+
+// Remove first item
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  { $pop: { friends: -1 } }
+);
+// 📝 Note:
+// - removes last, -1 removes first.
+
+// ❌ $pull – Remove Specific Value from Array
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  { $pull: { languages: "German" } }
+);
+// 📝 Note:
+// - Removes all instances of "German" from the array.
+
+// ❌ $pullAll – Remove Multiple Values from Array
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  { $pullAll: { languages: ["Catalan", "Thai"] } }
+);
+// 📝 Note:
+// - Removes all listed items if they exist.
+
+// 🗑️ Document Deletion
+// deleteOne – Delete a Single Document
+db.test.deleteOne({ _id: ObjectId("6406ad63fc13ae5a40000065") });
+// deleteMany – Delete Multiple Documents
+db.test.deleteMany({ gender: "Female" });
+
+// ⚠️ Drop Operations
+// drop() – Delete Entire Collection
+db.test.drop();
+// 📝 Note:
+// - Deletes all documents and removes the collection itself.
+// db.dropDatabase() – Delete Entire Database
+
+use testDB
+db.dropDatabase()
+// 📝 Dangerous operation: Completely removes the database and all collections in it.
