@@ -1,0 +1,67 @@
+// ✅ Dot Notation with Indexed Array Elements
+db.test.find({ "interests.2": "Reading" }).project({ interests: 1 });
+
+// 📝 Note:
+// - Matches documents where the third element (index 2) in the interests array is "Reading".
+// - Array indexes start at 0.
+// - This is useful when you want to check a value at a specific position in an array.
+
+// ✅ $all — Match All Values in an Array
+db.test
+  .find({ interests: { $all: ["Reading", "Gardening"] } })
+  .project({ interests: 1 });
+
+// 📝 Note:
+// - Returns documents where the interests array contains both "Reading" and "Gardening", in any order.
+// - Equivalent to SQL: WHERE interests CONTAINS "Reading" AND "Gardening".
+// 📌 It’s useful when you need all specified values to exist in an array field.
+
+// ✅ $elemMatch — Match Embedded Document Inside an Array
+db.test
+  .find({
+    skills: {
+      $elemMatch: {
+        name: "JAVASCRIPT",
+        level: "Intermidiate",
+      },
+    },
+  })
+  .project({ skills: 1 });
+
+//   📝 Note:
+// - Searches for at least one element in the skills array (which contains objects) that matches all conditions within the same element.
+// - Without $elemMatch, MongoDB would try to match conditions in different elements, which may give incorrect results.
+
+// 📌 When to use:
+// Use $elemMatch when querying arrays of objects and want all conditions to apply to the same object.
+// ✅ Example skills array this would match:
+
+// "skills": [
+//   { "name": "JAVASCRIPT", "level": "Intermidiate" },
+//   { "name": "PYTHON", "level": "Beginner" }
+// ]
+
+// "skills": [
+//   { "name": "JAVASCRIPT" },
+//   { "level": "Intermidiate" }
+// ]
+
+// Dot notation for array index
+db.test.find({ "interests.2": "Reading" }).project({ interests: 1 });
+
+// $all usage
+db.test
+  .find({ interests: { $all: ["Reading", "Gardening"] } })
+  .project({ interests: 1 });
+
+// $elemMatch usage
+db.test
+  .find({
+    skills: {
+      $elemMatch: {
+        name: "JAVASCRIPT",
+        level: "Intermidiate",
+      },
+    },
+  })
+  .project({ skills: 1 });
