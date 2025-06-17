@@ -1,0 +1,58 @@
+// ✅ $addToSet — Add Value to Array Only If Not Present
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  {
+    $addToSet: {
+      interests: ["Hello"],
+    },
+  }
+);
+
+// 📝 Note:
+// - This will not add "Hello" if it already exists in the interests array.
+// - Prevents duplicate values.
+// - If "Hello" is already in the array, nothing happens.
+// - If you pass an array like ["Hello"], MongoDB will treat it as a single element (array inside array), which is usually not intended.
+
+// 🔧 Correct usage for single value:
+$addToSet: {
+  interests: "Hello";
+}
+
+// ✅ $addToSet with $each — Add Multiple Unique Values
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  {
+    $addToSet: {
+      interests: {
+        $each: ["hello", "gello"],
+      },
+    },
+  }
+);
+
+// 📝 Note:
+// - Adds each item from the array to interests if not already present.
+// - Good when you want to bulk-add multiple values without duplication.
+// - Only items not already in the array are added.
+
+// 🔄 $push — Always Adds Value (Allows Duplicates)
+db.test.updateOne(
+  { _id: ObjectId("6406ad63fc13ae5a40000065") },
+  {
+    $push: {
+      interests: "hello",
+    },
+  }
+);
+
+// 📝 Note:
+// - Always appends the value even if it’s already present.
+// - Can lead to duplicates in the array.
+// - Used when you intentionally want to preserve order and history, like logs, chat messages, etc.
+
+$push: {
+  interests: {
+    $each: ["hello", "gello"];
+  }
+}
