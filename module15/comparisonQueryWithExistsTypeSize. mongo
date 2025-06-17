@@ -1,0 +1,34 @@
+// ✅ $exists — Check if Field Exists or Not
+db.test.find({ age: { $exists: false } });
+
+// 📝 Note:
+// - Returns documents where the age field does not exist at all.
+// - Use true to check if a field exists, and false to check if it does not exist.
+
+// 📌 Examples:
+// age field exists
+db.test.find({ age: { $exists: true } });
+
+// age field does not exist
+db.test.find({ age: { $exists: false } });
+
+// ✅ $type — Check Field Data Type
+db.test.find({ age: { $type: "string" } });
+
+db.test.find({ company: { $type: "null" } }).project({ company: 1 });
+
+// 📝 Note:
+// - Matches documents where the field is of the given BSON type.
+// - Accepts both string type names and numeric type codes.
+// - Useful for checking or validating data types when documents are inconsistent.
+
+// ✅ $size — Match Array by Length
+db.test.find({ friends: { $size: 0 } }).project({ friends: 1 });
+
+// Note:
+// - Selects documents where the array has exactly N elements.
+// - Only works on fields that are arrays.
+// - $size does not support comparison operators like $gt, $lt. You’d need aggregation for that.
+
+// Find documents where 'friends' array has exactly 3 items
+db.test.find({ friends: { $size: 3 } });
