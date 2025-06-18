@@ -1,0 +1,48 @@
+// ✅ Implementation of $unwind, $group, $project, and $sort
+// Use Case: Group all interests by user age
+
+db.test
+  .aggregate([
+    // Stage 1: Unwind the "interests" array
+    {
+      $unwind: "$interests",
+    },
+
+    // Stage 2: Group documents by age
+    {
+      $group: {
+        _id: "$age", // group by age
+        interestsPerAge: { $push: "$interests" }, // collect all interests into an array
+      },
+    },
+
+    // Stage 3: Reshape the document with a custom field name
+    {
+      $project: {
+        age: "$_id", // rename _id to age
+        interestsPerAge: 1, // keep the array of interests
+      },
+    },
+
+    // Stage 4: Optional - sort by age in ascending order
+  ])
+  .sort({ _id: 1 });
+
+//   ✅ Detailed Explanation of Each Stage
+
+// 🔹 $unwind: "$interests"
+// -  Breaks each document with an interests array into multiple documents, one for each interest.
+// -  If a user has 3 interests, they will produce 3 documents (one per interest).
+// -  Useful to flatten arrays for further processing like counting or grouping.
+
+// 🔹 $group: { _id: "$age", interestsPerAge: { $push: "$interests" } }
+// -  Groups documents by age.
+// -  Collects all interests for that age into a single array using $push.
+
+// 🔹 $project
+// -  Renames _id to age for better readability.
+// -  Keeps interestsPerAge array in the output.
+
+// 🔹 .sort({ _id: 1 })
+// -  Sorts the output by age (which is _id here before projection).
+// -  Ascending order (1).
