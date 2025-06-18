@@ -1,0 +1,24 @@
+// ✅ Aggregation with $group, $push, and $project
+db.test.aggregate([
+  {
+    $group: {
+      _id: "$address.country", // Group by country
+      userInfo: { $push: "$$ROOT" }, // Push entire document into an array
+      userCount: { $sum: 1 }, // Count documents per country
+    },
+  },
+  {
+    $project: {
+      "userInfo.name": 1, // Show only name and email from userInfo
+      "userInfo.email": 1,
+      userCount: 1,
+    },
+  },
+]);
+
+// 🧠 Notes on Operators
+// Operator	Description
+// $group	Groups documents by a specified key (e.g., country)
+// $sum: 1	Counts the number of documents in each group
+// $push: "$$ROOT"	Pushes the full document into the grouped array
+// $project	Limits or reshapes fields in the final output
