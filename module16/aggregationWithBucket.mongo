@@ -1,0 +1,48 @@
+// ✅ Implementation of $bucket with $sort and $project
+// Use Case: Categorize users by age ranges and count how many fall into each range
+
+db.test.aggregate([
+  // Stage 1: Categorize documents into age buckets
+  {
+    $bucket: {
+      groupBy: "$age", // The field to group by (must be numeric)
+      boundaries: [20, 40, 60, 80], // Defines the bucket boundaries
+      default: "rest of", // If age doesn't fall in any range, it goes here
+      output: {
+        count: { $sum: 1 }, // Count documents per bucket
+        userInfo: { $push: "$$ROOT" }, // Collect full documents in each bucket
+      },
+    },
+  },
+
+  // Stage 2: Sort the buckets by _id (which represents the boundary)
+  {
+    $sort: { _id: 1 },
+  },
+
+  // Stage 3: Reshape the output
+  {
+    $project: {
+      count: 1, // Show only count (you can add userInfo if needed)
+    },
+  },
+]);
+
+// 🧠 Explanation of Each Stage:
+// 🔹 $bucket
+// -  groupBy: "$age": Groups documents based on the age field.
+// -  boundaries: [20, 40, 60, 80]: Defines ranges:
+//         20 <= age < 40
+//         40 <= age < 60
+//         60 <= age < 80
+// -  default: "rest of": Catches any age values not falling into the above buckets (e.g., <20 or >=80).
+// -  output:
+//         count: Counts how many documents in each bucket.
+//         userInfo: Collects full documents into an array (optional for display).
+
+// 🔹 $sort
+// -  Orders the buckets based on their _id, which will be 20, 40, 60, or "rest of".
+
+// 🔹 $project
+// -  Controls which fields to include in the final output.
+// -  Only showing count here for a clean summary.
