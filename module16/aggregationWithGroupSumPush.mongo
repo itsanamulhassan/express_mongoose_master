@@ -22,3 +22,32 @@ db.test.aggregate([
 // $sum: 1	Counts the number of documents in each group
 // $push: "$$ROOT"	Pushes the full document into the grouped array
 // $project	Limits or reshapes fields in the final output
+
+// ✅ Implementation of Aggregation with $group, $project, $sum, $avg, $max, $min, $subtract
+// Use Case: Calculate total, max, min, average, and range of salary across all documents
+
+db.test.aggregate([
+  {
+    // Stage 1: Group all documents (no specific _id means single group)
+    $group: {
+      _id: null,
+      totalSalary: { $sum: "$salary" }, // Total salary
+      maxSalary: { $max: "$salary" }, // Maximum salary
+      minSalary: { $min: "$salary" }, // Minimum salary
+      avgSalary: { $avg: "$salary" }, // Average salary
+    },
+  },
+  {
+    // Stage 2: Reshape the result fields
+    $project: {
+      totalSalary: 1,
+      maximumSalary: "$maxSalary", // Rename maxSalary field
+      minimumSalary: "$minSalary", // Rename minSalary field
+      averageSalary: "$avgSalary", // Rename avgSalary field
+      rangeBetweenMaxAndMin: {
+        // Calculate salary range
+        $subtract: ["$maxSalary", "$minSalary"],
+      },
+    },
+  },
+]);
