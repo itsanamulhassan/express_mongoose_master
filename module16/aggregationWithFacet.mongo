@@ -1,0 +1,59 @@
+// ✅ Implementation of $facet with multiple pipelines
+// Use Case: Run 3 parallel analytics pipelines (friends, interests, skills) in a single query
+
+db.test.aggregate([
+  {
+    $facet: {
+      // 🔹 Pipeline 1: friendsCount
+      // Goal: Count how many times each friend appears across all users
+
+      friendsCount: [
+        // Stage 1: Break the `friends` array into individual documents
+        { $unwind: "$friends" },
+
+        // Stage 2: Group by each friend's name and count frequency
+        { $group: { _id: "$friends", count: { $sum: 1 } } },
+
+        // Stage 3: Limit result to top 2 entries (unsorted)
+        { $limit: 2 },
+      ],
+
+      // 🔹 Pipeline 2: interestsCount
+      // Goal: Count how often each interest appears across all users
+
+      interestsCount: [
+        // Stage 1: Break the `interests` array into individual documents
+        { $unwind: "$interests" },
+
+        // Stage 2: Group by interest and count frequency
+        { $group: { _id: "$interests", count: { $sum: 1 } } },
+
+        // Stage 3: Limit result to top 2 entries
+        { $limit: 2 },
+      ],
+
+      // 🔹 Pipeline 3: skillsCount
+      // Goal: Count how often each skill name appears
+      skillsCount: [
+        // Stage 1: Break the `skills` array of objects into individual documents
+        { $unwind: "$skills" },
+
+        // Stage 2: Group by `skills.name` to count each skill
+        { $group: { _id: "$skills.name", count: { $sum: 1 } } },
+
+        // Stage 3: Limit result to top 2 entries
+        { $limit: 2 },
+      ],
+    },
+  },
+]);
+
+// 🔍 Summary of What This Query Does:
+// -  Runs three pipelines in parallel:
+//         friendsCount: How often each friend appears
+//         interestsCount: How often each interest appears
+//         skillsCount: How often each skill appears
+
+// -  Uses $unwind to flatten arrays before grouping
+// -  Uses $group to count each unique item
+// -  Uses $limit to reduce result size (for preview or dashboard)
