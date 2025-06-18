@@ -1,0 +1,40 @@
+// ✅ Aggregation with $match, $addFields, $project, $out
+db.test.aggregate([
+  // Stage 1: Filter documents
+  { $match: { gender: "Male" } },
+
+  // Stage 2: Add new fields to documents
+  {
+    $addFields: {
+      course: "Next Level Bootcamp",
+      eduTech: "Programming Hero",
+    },
+  },
+
+  // Stage 3: Optional: Show specific fields (currently commented out)
+  // { $project: { age: 1, gender: 1, course: 1 } },
+
+  // Stage 4: Output to a new collection
+  { $out: "maleStudents" },
+]);
+
+// 📝 Notes:
+// - $match filters Male users.
+// - $addFields dynamically adds new fields (course, eduTech) to each document.
+// - $out writes the final documents to a new collection called maleStudents, replacing it if it exists.
+
+// ✅ Aggregation with $match, $addFields, $merge
+db.test.aggregate([
+  { $match: { gender: "Male" } },
+  {
+    $addFields: {
+      course: "Level 2",
+      eduTech: "Programming Hero",
+    },
+  },
+  { $merge: "test" },
+]);
+
+// 📝 Notes:
+// -  $merge writes the output back to the original collection (test), updating or inserting documents depending on _id.
+// -  More flexible than $out — can merge, insert, replace, etc.
