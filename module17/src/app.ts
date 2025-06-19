@@ -39,4 +39,13 @@ app.post("/notes/create-note", async (req: Request, res: Response) => {
   });
 });
 
+app.get("/notes/all-notes", async (req: Request, res: Response) => {
+  const notes = await Note.find({});
+  res.status(200).json({
+    success: true,
+    message: "All the notes has been retrieved successfully",
+    notes,
+  });
+});
+
 export default app;
