@@ -43,8 +43,17 @@ app.get("/notes/all-notes", async (req: Request, res: Response) => {
   const notes = await Note.find({});
   res.status(200).json({
     success: true,
-    message: "All the notes has been retrieved successfully",
+    message: "Notes has been retrieved successfully",
     notes,
+  });
+});
+app.get("/notes/single-note/:id", async (req: Request, res: Response) => {
+  const noteId = req.params.id;
+  const note = await Note.findById(noteId);
+  res.status(200).json({
+    success: true,
+    message: "Note has been retrieved successfully",
+    note,
   });
 });
 
