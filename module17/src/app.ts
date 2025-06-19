@@ -56,5 +56,15 @@ app.get("/notes/single-note/:id", async (req: Request, res: Response) => {
     note,
   });
 });
+app.put("/notes/update-note/:id", async (req: Request, res: Response) => {
+  const noteId = req.params.id;
+  const updateNote = req.body;
+  const note = await Note.updateOne({ _id: noteId }, updateNote);
+  res.status(200).json({
+    success: true,
+    message: "Note has been updated successfully",
+    note,
+  });
+});
 
 export default app;
