@@ -1,0 +1,74 @@
+// ✅ Use Case 1: Create a single field ascending index
+// Improves search performance for queries filtering by `email`
+
+db.getCollection("massiveData").createIndex({ email: 1 }); // 1 = ascending order
+
+// 🔹 Explanation:
+// - This index makes queries like `{ email: "example@email.com" }` faster.
+// - Works well for sorting too: `.sort({ email: 1 })`
+
+// ✅ Use Case 2: Drop the email index
+// Removes the index when it’s no longer needed or you want to recreate
+db.getCollection("massiveData").dropIndex({ email: 1 });
+
+// ✅ Use Case 3: Create a text index on the `about` field
+// Enables full-text search capability on the field
+db.getCollection("massiveData").createIndex({ about: "text" });
+
+// 🔹 Explanation:
+// - Required for using `$text` queries.
+// - Only one text index per collection (can combine multiple fields using compound text index)
+
+// ✅ Use Case 4: Full-text search with $text
+// Returns documents containing the search term
+db.getCollection("massiveData")
+  .find({ $text: { $search: "dolor" } }) // Search term: "dolor"
+  .project({ about: 1 }); // Show only 'about' field
+
+// 🔹 Notes:
+// - This searches for "dolor" in all fields that are text-indexed
+// - Case-insensitive and supports phrase matching (e.g., `"\"exact phrase\""`)
+
+// 🧠 Other Useful Index Types with Notes
+
+// ✅ Use Case 5: Compound Index
+// Best for queries using both fields (e.g., { email, name })
+db.getCollection("massiveData").createIndex({ email: 1, name: 1 });
+
+// 🔹 Notes:
+// - Index supports queries that use `email` or both `email` and `name`
+// - Order matters: `email` must come before `name` in the query
+
+// ✅ Use Case 6: Unique Index
+// Prevents duplicate values for a field like email or username
+db.getCollection("massiveData").createIndex({ email: 1 }, { unique: true });
+
+// 🔹 Notes:
+// - Will throw an error if a duplicate value is inserted
+
+// ✅ Use Case 7: Sparse Index
+// Indexes only documents that contain the field
+db.getCollection("massiveData").createIndex({ nickname: 1 }, { sparse: true });
+
+// 🔹 Notes:
+// - Skips documents that don’t have `nickname` field
+// - Useful for optional fields
+
+// ✅ Use Case 8: TTL (Time-To-Live) Index
+// Automatically deletes documents after a set time
+db.getCollection("massiveData").createIndex(
+  { createdAt: 1 },
+  { expireAfterSeconds: 3600 }
+);
+
+// 🔹 Notes:
+// - `createdAt` must be a `Date` object
+// - Document will auto-delete after 1 hour (3600 seconds)
+
+// ✅ Use Case 9: Geospatial Index (2dsphere)
+// Required for querying coordinates and geo data
+db.getCollection("massiveData").createIndex({ location: "2dsphere" });
+
+// 🔹 Notes:
+// - Enables use of `$near`, `$geoWithin`, and other geo queries
+// - `location` must be in GeoJSON format
