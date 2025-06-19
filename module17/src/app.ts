@@ -66,5 +66,13 @@ app.put("/notes/update-note/:id", async (req: Request, res: Response) => {
     note,
   });
 });
+app.delete("/notes/delete-note/:id", async (req: Request, res: Response) => {
+  const noteId = req.params.id;
+  await Note.deleteOne({ _id: noteId });
+  res.status(200).json({
+    success: true,
+    message: "Note has been deleted successfully",
+  });
+});
 
 export default app;
